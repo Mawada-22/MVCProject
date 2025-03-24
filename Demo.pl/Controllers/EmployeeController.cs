@@ -71,18 +71,23 @@ namespace Demo.pl.Controllers
 
             if (emp == null) { return NotFound(); };
 
-            return View(new CreateEmpDto() { 
-            Name = emp.Name,
-            Salary = emp.Salary,
-            PhoneNumber = emp.PhoneNumber,
-            Address = emp.Address,
-            Email = emp.Email,
-            Age = emp.Age,
-            
+            return View(new EmployeeEditModelView()
+            {
+                Name = emp.Name,
+                Salary = emp.Salary,
+                phonenumber = emp.PhoneNumber,
+                Address = emp.Address,
+                Email = emp.Email,
+                Age = emp.Age,
+                IsActive = emp.IsActive,
+                HiringDate = emp.HiringDate,
+                EmpType = emp.EmpType,
+                gender = emp.gender
             });
 
 
         }
+
 
         [HttpPost]
         public IActionResult Edit([FromRoute] int id, EmployeeEditModelView employeeEditModelView)

@@ -21,6 +21,15 @@ namespace Demo.BLL.Dtos
         [MaxLength(12)]
         public string phonenumber { get; set; } = null!;
 
+        public string? Address { get; set; }
+
+        public Gender gender { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime HiringDate { get; set; }
+
+
+
+
 
 
     }
