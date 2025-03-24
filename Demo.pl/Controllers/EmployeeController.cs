@@ -94,12 +94,14 @@ namespace Demo.pl.Controllers
         {
             if (!ModelState.IsValid) return View(employeeEditModelView);
 
-            var Emp = new UpdateEmpDto() {Name = employeeEditModelView.Name,
-            Salary= employeeEditModelView.Salary,
-            Age= employeeEditModelView.Age,
-            Email = employeeEditModelView.Email,
-            EmpType = employeeEditModelView.EmpType,
-            phonenumber = employeeEditModelView.phonenumber
+            var Emp = new UpdateEmpDto() {
+                Id =id,
+                Name = employeeEditModelView.Name,
+                Salary = employeeEditModelView.Salary,
+                Age = employeeEditModelView.Age,
+                Email = employeeEditModelView.Email,
+                EmpType = employeeEditModelView.EmpType,
+                phonenumber = employeeEditModelView.phonenumber
             };
             var x = _services.UpdateEmployee(Emp);
             if (x > 0) { return RedirectToAction(nameof(Index)); }
