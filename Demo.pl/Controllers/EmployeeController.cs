@@ -128,7 +128,8 @@ namespace Demo.pl.Controllers
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Error deleting employee: {ex.Message}");
+                msg = "An error occurred during deletion.";
 
             }
 

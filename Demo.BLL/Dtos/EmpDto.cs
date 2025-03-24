@@ -21,8 +21,8 @@ namespace Demo.BLL.Dtos
 
         [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
-        public Gender gender { get; set; }
+        public Gender? gender { get; set; }
         [Display(Name = "Employee Type")]
-        public EmpType EmpType { get; set; }
+        public EmpType? EmpType { get; set; }
     }
 }

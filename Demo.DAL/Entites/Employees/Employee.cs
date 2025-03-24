@@ -17,7 +17,7 @@ namespace Demo.DAL.Entites.Employees
         public string? Address { get; set; }
         public string? Email { get; set;} 
         public string? PhoneNumber { get; set;} 
-        public DateOnly HiringDate { get; set; }
+        public DateTime HiringDate { get; set; }
         public Gender gender { get; set; } 
         public EmpType EmpType { get; set; }
            
