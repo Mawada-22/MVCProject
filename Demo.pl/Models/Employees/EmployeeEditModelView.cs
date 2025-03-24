@@ -1,16 +1,11 @@
 ﻿using Demo.DAL.Common;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Demo.BLL.Dtos
+namespace Demo.pl.Models.Employees
 {
-    public class UpdateEmpDto
+    public class EmployeeEditModelView 
     {
-        public int Id { get; set; }
         public string Name { get; set; } = null!;
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; } = null!;
@@ -20,8 +15,6 @@ namespace Demo.BLL.Dtos
         public decimal Salary { get; set; }
         [MaxLength(12)]
         public string phonenumber { get; set; } = null!;
-
-
 
     }
 }
