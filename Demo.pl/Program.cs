@@ -1,6 +1,8 @@
 using Demo.BLL.Services.DepartmentServicea;
+using Demo.BLL.Services.EmployeeServices;
 using Demo.DAL.Presistance.Data;
 using Demo.DAL.Presistance.Repostries.DepartmentRepos;
+using Demo.DAL.Presistance.Repostries.EmployeeRepos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.pl
@@ -24,7 +26,9 @@ namespace Demo.pl
                 options.UseSqlServer(connectionString));
           
             builder.Services.AddScoped<IDepartmentRepostiry, DepartmentRepostiry>();//allow dependancy injection by clr
-            builder.Services.AddScoped<IDepartmentServices, DepartmentServisces >(); //allow DI by clr in departmentcontlloer
+            builder.Services.AddScoped<IEmployeeRepostiry, EmployeeRepostiry>();//allow dependancy injection by clr
+            builder.Services.AddScoped<IDepartmentServices, DepartmentServisces >();  builder.Services.AddScoped<IDepartmentRepostiry, DepartmentRepostiry>();//allow dependancy injection by clr
+            builder.Services.AddScoped<IEmployeeServices, EmployeeServices>(); //allow DI by clr in departmentcontlloer
             #endregion
 
             var app = builder.Build();
