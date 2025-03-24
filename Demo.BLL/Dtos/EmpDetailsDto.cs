@@ -24,7 +24,7 @@ namespace Demo.BLL.Dtos
         public int? Age { get; set; }
         public decimal Salary { get; set; }
         [Display(Name = "Is Active?")]
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public string? Address { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
