@@ -31,6 +31,7 @@ namespace Demo.pl.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Create(CreateDepartmentDto departmentDto)
         {
             if (!ModelState.IsValid)
@@ -77,6 +78,7 @@ namespace Demo.pl.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Edit([FromRoute]int id,DepartmetEditViewModel departmetEditViewModel)
         {
             if (!ModelState.IsValid) return View(departmetEditViewModel);
@@ -102,6 +104,7 @@ namespace Demo.pl.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Delete([FromRoute]int id)
         {
             var msg = string.Empty;

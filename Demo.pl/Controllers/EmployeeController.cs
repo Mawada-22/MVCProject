@@ -31,6 +31,7 @@ namespace Demo.pl.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Create(CreateEmpDto  createEmpDto)
         {
             if (!ModelState.IsValid)
@@ -90,6 +91,7 @@ namespace Demo.pl.Controllers
 
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Edit([FromRoute] int id, EmployeeEditModelView employeeEditModelView)
         {
             if (!ModelState.IsValid) return View(employeeEditModelView);
@@ -122,6 +124,7 @@ namespace Demo.pl.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Delete([FromRoute] int id)
         {
             var msg = string.Empty;
