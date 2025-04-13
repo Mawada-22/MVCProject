@@ -33,7 +33,8 @@ namespace Demo.BLL.Services.EmployeeServices
                 Salary = createEmpDto.Salary,
                 HiringDate = createEmpDto.HiringDate,
                 IsActive = createEmpDto.IsActive,
-                EmpType = createEmpDto.EmpType
+                EmpType = createEmpDto.EmpType,
+                Departmentid = createEmpDto.Departmentid
 
             };
             return _employeeRepostiry.Add(employee);
