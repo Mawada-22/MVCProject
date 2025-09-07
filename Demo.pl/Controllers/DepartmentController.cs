@@ -11,9 +11,11 @@ namespace Demo.pl.Controllers
         private readonly IDepartmentServices _services;
         private readonly ILogger<DepartmentController>_logger;
         private readonly IWebHostEnvironment _environment;
-        public DepartmentController(IDepartmentServices departmentServices)
+        public DepartmentController(IDepartmentServices departmentServices, ILogger<DepartmentController> logger, IWebHostEnvironment environment)
         {
             _services = departmentServices;
+            _environment = environment;
+            _logger = logger;
         }
         [HttpGet] //Get: /Departments?Index
         public IActionResult Index()

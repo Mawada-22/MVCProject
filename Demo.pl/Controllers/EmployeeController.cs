@@ -10,9 +10,13 @@ namespace Demo.pl.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeServices _services;
-        public EmployeeController(IEmployeeServices employeeServices)
+        private readonly ILogger<EmployeeController> _logger;
+        private readonly IWebHostEnvironment _environment;
+        public EmployeeController(IEmployeeServices employeeServices, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
         {
             _services = employeeServices;
+            _environment = environment;
+            _logger = logger;
         }
         [HttpGet] //Get: /Departments?Index
         public IActionResult Index()
@@ -56,11 +60,11 @@ namespace Demo.pl.Controllers
             {
                 return BadRequest();
             }
-            var emp = _services.GetEmployeeById(id.Value);
+            var Emp = _services.GetEmployeeById(id.Value);
 
 
-            if (emp == null) { return NotFound(); };
-            return View(emp);
+            if (Emp == null) { return NotFound(); };
+            return View(Emp);
         }
 
         [HttpGet]
