@@ -9,6 +9,8 @@ namespace Demo.pl.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentServices _services;
+        private readonly ILogger<DepartmentController>_logger;
+        private readonly IWebHostEnvironment _environment;
         public DepartmentController(IDepartmentServices departmentServices)
         {
             _services = departmentServices;
@@ -66,13 +68,20 @@ namespace Demo.pl.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if(!id.HasValue)return BadRequest();
+            if(id is null )return BadRequest(); //400
             var department = _services.GetDepartmentById(id.Value);
 
 
             if (department == null) { return NotFound(); };
 
-            return View(new CreateDepartmentDto() {Code= department.Code,Name=department.Name,Description=department.Description,CreationDate=department.CreationDate });
+            return View(new DepartmetEditViewModel()
+            {
+                Code = department.Code,
+                Name = department.Name,
+                Description = department.Description,
+                CreationDate = department.CreationDate
+
+            });
 
                                                                    
         }
@@ -82,13 +91,26 @@ namespace Demo.pl.Controllers
         public IActionResult Edit([FromRoute]int id,DepartmetEditViewModel departmetEditViewModel)
         {
             if (!ModelState.IsValid) return View(departmetEditViewModel);
+            var msg = string.Empty;
+            try
+            {
+                var department = new UpdateDepartmentDto() { Id = id, Code = departmetEditViewModel.Code, Name = departmetEditViewModel.Name, Description = departmetEditViewModel.Description, CreationDate = departmetEditViewModel.CreationDate };
 
-            var department = new UpdateDepartmentDto() { Id=id,Code = departmetEditViewModel.Code, Name = departmetEditViewModel.Name, Description = departmetEditViewModel.Description, CreationDate = departmetEditViewModel.CreationDate };
-           
-            var x =_services.UpdateDepartment(department);
-            if (x > 0) { return RedirectToAction(nameof(Index)); }
-            else { return BadRequest(); }
+                var x = _services.UpdateDepartment(department);
+                if (x > 0) { return RedirectToAction(nameof(Index)); }
 
+                msg = "an Error Ocurred while editing department";
+
+            }
+            catch (Exception ex)
+            {
+                //1-log
+                _logger.LogError(ex, msg);
+                //2.set massage 
+                msg = _environment.IsDevelopment() ? ex.Message : "An Error ocurred while updating";
+                
+            }
+            return View(departmetEditViewModel);    
 
         }
 
@@ -118,8 +140,11 @@ namespace Demo.pl.Controllers
             }
             catch (Exception ex)
             {
+                //1-log the exception
+                _logger.LogError(ex, ex.Message);
 
-               
+                //2- set msg
+                msg = _environment.IsDevelopment()     ? ex.Message : "\"an error Ocurred During deleting the Depaertment:(";
             }
 
            return RedirectToAction(nameof(Index));
