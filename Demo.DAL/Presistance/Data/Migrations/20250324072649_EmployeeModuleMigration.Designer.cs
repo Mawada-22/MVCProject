@@ -4,6 +4,7 @@ using Demo.DAL.Presistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.DAL.Presistance.Data.Migrations
 {
     [DbContext(typeof(APPDBContext))]
-    partial class APPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250324072649_EmployeeModuleMigration")]
+    partial class EmployeeModuleMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,9 +93,6 @@ namespace Demo.DAL.Presistance.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Departmentid")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -100,9 +100,9 @@ namespace Demo.DAL.Presistance.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("HiringDate")
+                    b.Property<DateOnly>("HiringDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("date")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<bool?>("IsActive")
@@ -134,24 +134,7 @@ namespace Demo.DAL.Presistance.Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("Departmentid");
-
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("Demo.DAL.Entites.Employees.Employee", b =>
-                {
-                    b.HasOne("Demo.DAL.Entites.Departments.Department", "department")
-                        .WithMany("employees")
-                        .HasForeignKey("Departmentid")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("department");
-                });
-
-            modelBuilder.Entity("Demo.DAL.Entites.Departments.Department", b =>
-                {
-                    b.Navigation("employees");
                 });
 #pragma warning restore 612, 618
         }

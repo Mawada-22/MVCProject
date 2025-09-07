@@ -19,6 +19,8 @@ namespace Demo.DAL.Presistance.Data.Configurations.Departments
             builder.Property(D => D.Code).IsRequired().HasColumnType("Varchar(50)");
             builder.Property(D => D.CreatedOn).HasDefaultValueSql("GETDATE()"); //updateable
             builder.Property(D => D.CreationDate).HasComputedColumnSql("GETDATE()"); //unupdateable
+            builder.HasMany(D=>D.employees).WithOne(E=>E.department).HasForeignKey(E=>E.Departmentid)
+                .OnDelete(DeleteBehavior.SetNull);
 
         }
     }

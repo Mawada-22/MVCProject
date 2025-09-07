@@ -1,11 +1,18 @@
-﻿@model CreateDepartmentDto
+﻿
+@model DepartmetEditViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
-<div class="row justify-content-center align-items-center">
-    <h1 class="col-8 my-4">Create New Department</h1>
 
-    <form asp-action="Create" class="col-8">
+<h1>Edit</h1>
+
+<div class="row justify-content-center align-items-center">
+    <h1 class="col-8 my-4">Update Department</h1>
+
+    <form asp-action="Edit" method="post" class="col-8">
+        <input type="hidden" asp-for="Code" />
+        <div asp-validation-summary="ModelOnly"></div>
+
         <div class="form-group mb-3">
             <label class="col-form-label" asp-for="Code"></label>
             <input asp-for="Code" class="form-control" />
@@ -25,14 +32,13 @@
         </div>
 
         <div class="mt-4">
-            <input type="submit" class="btn btn-primary" value="Create" />
+            <input type="submit" class="btn btn-primary" value="Save Changes" />
             <span>|</span>
-            <a asp-controller="Department" asp-action="Index" class="btn btn-secondary">Back to List</a>
+            <a asp-controller="Department" asp-action="Index" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
+
 </div>
-
-
 @section ValidationScript {
     <partial name="_ValidationScriptsPartial"></partial>
 }
