@@ -2,7 +2,7 @@
 
 namespace Demo.pl.Models.Departmets
 {
-    public class DepartmetEditViewModel
+    public class DepartmetViewModel
     {
 
         [Required(ErrorMessage = "Name is Required")]

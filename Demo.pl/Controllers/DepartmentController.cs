@@ -2,7 +2,6 @@
 using Demo.BLL.Services.DepartmentServicea;
 using Demo.pl.Models.Departmets;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace Demo.pl.Controllers
 {
@@ -35,23 +34,25 @@ namespace Demo.pl.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
-        public IActionResult Create(CreateDepartmentDto departmentDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(DepartmetViewModel departmetViewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(departmentDto);
-            }
+            if (!ModelState.IsValid) return View(departmetViewModel);
 
-            var res = _services.CreateDepartment(departmentDto);
-
-            if (res > 0) { return RedirectToAction(nameof(Index)); }
-            else
+            var res = _services.CreateDepartment(new CreateDepartmentDto
             {
-                ModelState.AddModelError(string.Empty, "Department is not created");
-                return View(departmentDto);
-            }
+                Code = departmetViewModel.Code,
+                CreationDate = departmetViewModel.CreationDate,
+                Name = departmetViewModel.Name,
+                Description = departmetViewModel.Description
+            });
+
+            if (res > 0) return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError(string.Empty, "Department is not created");
+            return View(departmetViewModel);
         }
+
 
         [HttpGet]
         public IActionResult Details(int? id)
@@ -76,7 +77,7 @@ namespace Demo.pl.Controllers
 
             if (department == null) { return NotFound(); };
 
-            return View(new DepartmetEditViewModel()
+            return View(new DepartmetViewModel()
             {
                 Code = department.Code,
                 Name = department.Name,
@@ -90,7 +91,7 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Edit([FromRoute]int id,DepartmetEditViewModel departmetEditViewModel)
+        public IActionResult Edit([FromRoute]int id,DepartmetViewModel departmetEditViewModel)
         {
             if (!ModelState.IsValid) return View(departmetEditViewModel);
             var msg = string.Empty;

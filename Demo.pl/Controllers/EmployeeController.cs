@@ -1,7 +1,5 @@
 ﻿using Demo.BLL.Dtos;
-using Demo.BLL.Services.DepartmentServicea;
 using Demo.BLL.Services.EmployeeServices;
-using Demo.pl.Models.Departmets;
 using Demo.pl.Models.Employees;
 using Microsoft.AspNetCore.Mvc;
 
