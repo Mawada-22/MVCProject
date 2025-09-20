@@ -34,20 +34,20 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Create(CreateEmpDto  createEmpDto)
+        public IActionResult Create(EmployeeModelView  employeeModelView)
         {
             if (!ModelState.IsValid)
             {
-                return View(createEmpDto);
+                return View(employeeModelView);
             }
 
-            var res = _services.CreateEmployee(createEmpDto);
+            var res = _services.CreateEmployee(new CreateEmpDto() {Name=employeeModelView.Name,Email=employeeModelView.Email,Address=employeeModelView.Address,IsActive=employeeModelView.IsActive,EmpType=employeeModelView.EmpType,Age=employeeModelView.Age,Salary=employeeModelView.Salary,PhoneNumber=employeeModelView.phonenumber,gender=employeeModelView.gender});
 
             if (res > 0) { return RedirectToAction(nameof(Index)); }
             else
             {
                 ModelState.AddModelError(string.Empty, "Employee is not created");
-                return View(createEmpDto);
+                return View(employeeModelView);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Demo.pl.Controllers
 
             if (emp == null) { return NotFound(); };
 
-            return View(new EmployeeEditModelView()
+            return View(new EmployeeModelView()
             {
                 Name = emp.Name,
                 Salary = emp.Salary,
@@ -94,7 +94,7 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Edit([FromRoute] int id, EmployeeEditModelView employeeEditModelView)
+        public IActionResult Edit([FromRoute] int id, EmployeeModelView employeeEditModelView)
         {
             if (!ModelState.IsValid) return View(employeeEditModelView);
 

@@ -29,7 +29,7 @@ namespace Demo.BLL.Dtos
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public DateTime HiringDate { get; set; }
-        public Gender gender { get; set; }
+        public Gender? gender { get; set; }
         [Display(Name = "Employee Type")]
         public EmpType EmpType { get; set; }
     }

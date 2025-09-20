@@ -20,7 +20,7 @@ namespace Demo.DAL.Entites.Employees
         public string? Email { get; set;} 
         public string? PhoneNumber { get; set;} 
         public DateTime HiringDate { get; set; }
-        public Gender gender { get; set; } 
+        public Gender? gender { get; set; } 
         public EmpType EmpType { get; set; }
         
         public int? Departmentid { get; set; }

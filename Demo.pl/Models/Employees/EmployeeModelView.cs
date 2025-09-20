@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Demo.pl.Models.Employees
 {
-    public class EmployeeEditModelView 
+    public class EmployeeModelView 
     {
         public string Name { get; set; } = null!;
         [DataType(DataType.EmailAddress)]
