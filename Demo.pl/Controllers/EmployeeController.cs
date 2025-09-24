@@ -1,4 +1,5 @@
 ﻿using Demo.BLL.Dtos;
+using Demo.BLL.Services.DepartmentServicea;
 using Demo.BLL.Services.EmployeeServices;
 using Demo.pl.Models.Employees;
 using Microsoft.AspNetCore.Mvc;
@@ -10,23 +11,26 @@ namespace Demo.pl.Controllers
         private readonly IEmployeeServices _services;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
-        public EmployeeController(IEmployeeServices employeeServices, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
+        private readonly IDepartmentServices _departmentService;
+        public EmployeeController(IEmployeeServices employeeServices, ILogger<EmployeeController> logger, IWebHostEnvironment environment, IDepartmentServices departmentServices)
         {
             _services = employeeServices;
             _environment = environment;
             _logger = logger;
+            _departmentService = departmentServices;
         }
         [HttpGet] //Get: /Departments?Index
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
 
-            var Emps = _services.GetAllEmpolyees();
+            var Emps = _services.GetEmpolyees(search);
             return View(Emps);
 
         }
         [HttpGet] 
         public IActionResult Create()
         {
+            ViewData["Departments"] = _departmentService.GetAllDepartments();
             return View();
 
 
@@ -41,7 +45,7 @@ namespace Demo.pl.Controllers
                 return View(employeeModelView);
             }
 
-            var res = _services.CreateEmployee(new CreateEmpDto() {Name=employeeModelView.Name,Email=employeeModelView.Email,Address=employeeModelView.Address,IsActive=employeeModelView.IsActive,EmpType=employeeModelView.EmpType,Age=employeeModelView.Age,Salary=employeeModelView.Salary,PhoneNumber=employeeModelView.phonenumber,gender=employeeModelView.gender});
+            var res = _services.CreateEmployee(new CreateEmpDto() {Name=employeeModelView.Name,Email=employeeModelView.Email,Address=employeeModelView.Address,IsActive=employeeModelView.IsActive,EmpType=employeeModelView.EmpType,Age=employeeModelView.Age,Salary=employeeModelView.Salary,PhoneNumber=employeeModelView.phonenumber,gender=employeeModelView.gender, Departmentid=employeeModelView.DepartmentID});
 
             if (res > 0) { return RedirectToAction(nameof(Index)); }
             else
@@ -54,6 +58,8 @@ namespace Demo.pl.Controllers
         [HttpGet]
         public IActionResult Details(int? id)
         {
+            ViewData["Department"] = _departmentService.GetAllDepartments();
+
             if (!id.HasValue)
             {
                 return BadRequest();
@@ -68,11 +74,15 @@ namespace Demo.pl.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+           
             if (!id.HasValue) return BadRequest();
             var emp = _services.GetEmployeeById(id.Value);
 
 
             if (emp == null) { return NotFound(); };
+
+            ViewData["Departments"] = _departmentService.GetAllDepartments();
+
 
             return View(new EmployeeModelView()
             {
@@ -85,7 +95,9 @@ namespace Demo.pl.Controllers
                 IsActive = emp.IsActive,
                 HiringDate = emp.HiringDate,
                 EmpType = emp.EmpType,
-                gender = emp.gender
+                gender = emp.gender,
+                DepartmentID=emp.Departmentid,
+                DepartmentName=emp.DepartmentName
             });
 
 
@@ -96,23 +108,38 @@ namespace Demo.pl.Controllers
         [IgnoreAntiforgeryToken]
         public IActionResult Edit([FromRoute] int id, EmployeeModelView employeeEditModelView)
         {
-            if (!ModelState.IsValid) return View(employeeEditModelView);
+            if (!ModelState.IsValid)
+            {
+                ViewData["Departments"] = _departmentService.GetAllDepartments();
+                return View(employeeEditModelView);
+            }
 
-            var Emp = new UpdateEmpDto() {
-                Id =id,
+            var Emp = new UpdateEmpDto()
+            {
+                Id = id,
                 Name = employeeEditModelView.Name,
                 Salary = employeeEditModelView.Salary,
                 Age = employeeEditModelView.Age,
                 Email = employeeEditModelView.Email,
                 EmpType = employeeEditModelView.EmpType,
-                phonenumber = employeeEditModelView.phonenumber
+                phonenumber = employeeEditModelView.phonenumber,
+                gender=employeeEditModelView.gender,
+
+
+
+                DepartmentId = employeeEditModelView.DepartmentID.HasValue && employeeEditModelView.DepartmentID > 0
+                                ? employeeEditModelView.DepartmentID
+                                : null
             };
+
             var x = _services.UpdateEmployee(Emp);
-            if (x > 0) { return RedirectToAction(nameof(Index)); }
-            else { return BadRequest(); }
 
+            if (x > 0)
+                return RedirectToAction(nameof(Index));
 
+            return BadRequest();
         }
+
 
         [HttpGet]
         public IActionResult Delete(int? id)
@@ -129,6 +156,7 @@ namespace Demo.pl.Controllers
         [IgnoreAntiforgeryToken]
         public IActionResult Delete([FromRoute] int id)
         {
+
             var msg = string.Empty;
             try
             {

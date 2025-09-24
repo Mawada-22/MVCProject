@@ -2,6 +2,7 @@
 using Demo.DAL.Entites.Departments;
 using Demo.DAL.Entites.Employees;
 using Demo.DAL.Presistance.Repostries.EmployeeRepos;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,7 @@ namespace Demo.BLL.Services.EmployeeServices
                 IsActive = createEmpDto.IsActive,
                 EmpType = createEmpDto.EmpType,
                 Departmentid = createEmpDto.Departmentid
+               
 
             };
             return _employeeRepostiry.Add(employee);
@@ -48,9 +50,9 @@ namespace Demo.BLL.Services.EmployeeServices
             else { return false; }
         }
 
-        public IEnumerable<EmpDto> GetAllEmpolyees()
+        public IEnumerable<EmpDto> GetEmpolyees(string sreach)
         {
-            var Emps = _employeeRepostiry.GetQueryable().Select(Emp => new EmpDto
+            var Emps = _employeeRepostiry.GetQueryable().Where(E=>!E.IsDeleted && (string.IsNullOrEmpty(sreach) ||E.Name.ToLower().Contains(sreach.ToLower()))).Include(E=>E.department).Select(Emp => new EmpDto
             {
                 ID = Emp.ID,
                 Name = Emp.Name,
@@ -58,7 +60,10 @@ namespace Demo.BLL.Services.EmployeeServices
                 Age = Emp.Age,
                 Salary = Emp.Salary,
                 gender = Emp.gender,
-                EmpType = Emp.EmpType
+                EmpType = Emp.EmpType,
+                DepartmentId = Emp.Departmentid,
+                DepartmentName=Emp.department.Name
+               
 
 
             });
@@ -85,6 +90,8 @@ namespace Demo.BLL.Services.EmployeeServices
                     CreatedBy = Emp.CreatedBy,
                     CreatedOn = Emp.CreatedOn,
                     PhoneNumber = Emp.PhoneNumber,
+                    Departmentid = Emp.Departmentid,
+                    DepartmentName = Emp.department != null ? Emp.department.Name : "No Department"
 
 
                 };
@@ -94,20 +101,30 @@ namespace Demo.BLL.Services.EmployeeServices
 
         public int UpdateEmployee(UpdateEmpDto updateEmpDto)
         {
-            var Emp = new Employee()
-            {
-                ID = updateEmpDto.Id,
-                Name = updateEmpDto.Name,
-                Age = updateEmpDto.Age,
-                Salary = updateEmpDto.Salary,
-                EmpType = updateEmpDto.EmpType
-            };
+            var emp = _employeeRepostiry.Get(updateEmpDto.Id);
+            if (emp == null) return 0;
 
+            // Update only the editable fields
+            emp.Name = updateEmpDto.Name;
+            emp.Age = updateEmpDto.Age;
+            emp.Salary = updateEmpDto.Salary;
+            emp.EmpType = updateEmpDto.EmpType;
+            emp.Departmentid = updateEmpDto.DepartmentId;
+            emp.gender = updateEmpDto.gender;
+            emp.Address = updateEmpDto.Address;
 
-            return _employeeRepostiry.update(Emp);
+            // Keep existing email and phone unless explicitly passed
+            if (!string.IsNullOrWhiteSpace(updateEmpDto.Email))
+                emp.Email = updateEmpDto.Email;
 
+            if (!string.IsNullOrWhiteSpace(updateEmpDto.phonenumber))
+                emp.PhoneNumber = updateEmpDto.phonenumber;
 
+            if (!string.IsNullOrWhiteSpace(updateEmpDto.Address))
+                emp.Address = updateEmpDto.Address;
 
+            return _employeeRepostiry.update(emp);
         }
+
     }
 }

@@ -14,6 +14,7 @@ namespace Demo.BLL.Dtos
         public string? Code { get; set; } = null!;
 
         [Display(Name = "Date of Creation")]
-        public DateTime CreationDate { get; set; }  
+        public DateTime CreationDate { get; set; }
+        public string? Department {  get; set; }
     }
 }

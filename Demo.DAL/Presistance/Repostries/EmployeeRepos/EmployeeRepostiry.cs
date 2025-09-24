@@ -17,6 +17,7 @@ namespace Demo.DAL.Presistance.Repostries.EmployeeRepos
        
         public EmployeeRepostiry(APPDBContext context) : base(context)
         {
+
             
         }
     }

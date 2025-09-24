@@ -23,9 +23,10 @@ namespace Demo.DAL.Entites.Employees
         public Gender? gender { get; set; } 
         public EmpType EmpType { get; set; }
         
+
         public int? Departmentid { get; set; }
         //navigational prooertty.
-        public Department? department { get; set; }
+        public virtual Department? department { get; set; }
            
     }
 }

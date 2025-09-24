@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Common;
+using Demo.DAL.Entites.Departments;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,6 @@ namespace Demo.BLL.Dtos
     public class EmpDto
     {
         public int ID { get; set; }
-
         public string Name { get; set; } = null!;
         public int? Age { get; set; }
         [DataType(DataType.Currency)]
@@ -24,5 +24,8 @@ namespace Demo.BLL.Dtos
         public Gender? gender { get; set; }
         [Display(Name = "Employee Type")]
         public EmpType? EmpType { get; set; }
+        public  int? DepartmentId {  get; set; }
+        public string? DepartmentName { get; set; }
+       
     }
 }

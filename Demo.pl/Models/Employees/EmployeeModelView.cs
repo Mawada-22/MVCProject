@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Common;
+using Demo.DAL.Entites.Departments;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -19,6 +20,10 @@ namespace Demo.pl.Models.Employees
         public Gender? gender { get; set; }
         public DateTime HiringDate { get; set; }
         public bool IsActive { get; set; }
+
+        public int? DepartmentID { get; set; }
+        public string? DepartmentName { get; set; }
+
 
     }
 }

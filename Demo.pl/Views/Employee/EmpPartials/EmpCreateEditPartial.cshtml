@@ -1,6 +1,7 @@
 ﻿@model EmployeeModelView
 @{
     ViewData["Title"] = "EmpCreateEditPartial";
+    var depaerments = new SelectList(ViewData["Departments"] as IEnumerable<DepartmentToReturnDto>, nameof(DepartmentToReturnDto.Id), nameof(DepartmentToReturnDto.Name));
 }
 
 @* <form action="/Department/Create" method="post"></form> *@
@@ -19,7 +20,7 @@
     </div>
     <div class="form-group col-6">
         <label class="col-form-label" asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
+        <input asp-for="Email" class="form-control" /> 
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="form-group col-6">
@@ -42,15 +43,24 @@
         <input asp-for="phonenumber" class="form-control" />
         <span asp-validation-for="phonenumber" class="text-danger"></span>
     </div>
-
     <div class="form-group col-6">
         <label asp-for="EmpType" class="control-label"></label>
         <select asp-for="EmpType" asp-items="Html.GetEnumSelectList<EmpType>()" class="form-control">
             <option value="">
-                Select Employee Type
+                Select Employee value
             </option>
         </select>
     </div>
+    @*////////////////////*@
+
+    <div class="form-group col-6">
+        <label asp-for="DepartmentID" class="control-label"></label>
+        <select asp-for="DepartmentID" asp-items="@depaerments" class="form-control">
+            <option value="">-- No Department --</option>   @* This lets you keep it null *@
+        </select>
+        <span asp-validation-for="DepartmentID" class="text-danger"></span>
+    </div>
+
     <div class="form-group col-6">
         <label class="control-label" asp-for="gender"></label> <br />
         @foreach (Gender genderOption in Enum.GetValues(typeof(Gender)))

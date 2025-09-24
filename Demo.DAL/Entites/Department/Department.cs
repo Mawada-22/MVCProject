@@ -20,7 +20,7 @@ namespace Demo.DAL.Entites.Departments
 
         //navigational property
 
-        public ICollection<Employee> employees { get; set; } = new HashSet<Employee>();
+        public virtual ICollection<Employee> employees { get; set; } = new HashSet<Employee>();
 
     }
 }

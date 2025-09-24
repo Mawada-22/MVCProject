@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Common;
+using Demo.DAL.Entites.Departments;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,12 +21,13 @@ namespace Demo.BLL.Dtos
         public decimal Salary { get; set; }
         [MaxLength(12)]
         public string phonenumber { get; set; } = null!;
-
+       
         public string? Address { get; set; }
 
-        public Gender gender { get; set; }
+        public Gender? gender { get; set; }
         public bool IsActive { get; set; }
         public DateTime HiringDate { get; set; }
+        public int? DepartmentId { get; set; }
 
 
 

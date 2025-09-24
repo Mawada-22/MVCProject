@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Common;
+using Demo.DAL.Entites.Departments;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -32,5 +33,8 @@ namespace Demo.BLL.Dtos
         public Gender? gender { get; set; }
         [Display(Name = "Employee Type")]
         public EmpType EmpType { get; set; }
+        public int? Departmentid { get; set; }
+        public string? DepartmentName { get; set; }
+
     }
 }

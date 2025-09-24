@@ -4,6 +4,7 @@ using Demo.DAL.Presistance.Data;
 using Demo.DAL.Presistance.Repostries.DepartmentRepos;
 using Demo.DAL.Presistance.Repostries.EmployeeRepos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Demo.pl
 {
@@ -20,10 +21,14 @@ namespace Demo.pl
             // Add services to the container. //configure sevice
             builder.Services.AddControllersWithViews();
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            //services life time 
+            //addscooped --> per request 
+            //add singlton --> per application 
+            //add tranisint --> per operation 
 
-            builder.Services.AddDbContext<APPDBContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<APPDBContext>((OptionsBuilder) => {
+            OptionsBuilder.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
           
             builder.Services.AddScoped<IDepartmentRepostiry, DepartmentRepostiry>();//allow dependancy injection by clr
             builder.Services.AddScoped<IEmployeeRepostiry, EmployeeRepostiry>();//allow dependancy injection by clr
