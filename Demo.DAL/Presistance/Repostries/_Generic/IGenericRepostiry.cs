@@ -13,9 +13,9 @@ namespace Demo.DAL.Presistance.Repostries._Generic
         T? Get(int id);
         IEnumerable<T> GETALL(bool WithAsNoTracking = true);
         IQueryable<T> GetQueryable();
-        int Add(T t);
-        int update(T t);
-        int Delete(T t);
+        void Add(T t);
+        void update(T t);
+        void Delete(T t);
     }
     
 }

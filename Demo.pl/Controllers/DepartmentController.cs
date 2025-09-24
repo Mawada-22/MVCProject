@@ -1,4 +1,5 @@
-﻿using Demo.BLL.Dtos;
+﻿using AutoMapper;
+using Demo.BLL.Dtos;
 using Demo.BLL.Services.DepartmentServicea;
 using Demo.pl.Models.Departmets;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,15 @@ namespace Demo.pl.Controllers
     {
         private readonly IDepartmentServices _services;
         private readonly ILogger<DepartmentController>_logger;
+        private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _environment;
-        public DepartmentController(IDepartmentServices departmentServices, ILogger<DepartmentController> logger, IWebHostEnvironment environment)
+    
+        public DepartmentController(IDepartmentServices departmentServices, ILogger<DepartmentController> logger, IWebHostEnvironment environment,IMapper mapper)
         {
             _services = departmentServices;
             _environment = environment;
             _logger = logger;
+            _mapper = mapper;
         }
         [HttpGet] //Get: /Departments?Index
         public IActionResult Index()
@@ -39,14 +43,16 @@ namespace Demo.pl.Controllers
         {
             if (!ModelState.IsValid) return View(departmetViewModel);
 
-            var res = _services.CreateDepartment(new CreateDepartmentDto
+            var departmentcreated = _mapper.Map<DepartmetViewModel, CreateDepartmentDto>(departmetViewModel);
+
+           /* var res = _services.CreateDepartment(new CreateDepartmentDto
             {
                 Code = departmetViewModel.Code,
                 CreationDate = departmetViewModel.CreationDate,
                 Name = departmetViewModel.Name,
                 Description = departmetViewModel.Description
-            });
-
+            });*/
+           var res = _services.CreateDepartment(departmentcreated);
             if (res > 0) return RedirectToAction(nameof(Index));
 
             ModelState.AddModelError(string.Empty, "Department is not created");
@@ -77,14 +83,17 @@ namespace Demo.pl.Controllers
 
             if (department == null) { return NotFound(); };
 
-            return View(new DepartmetViewModel()
+            var departmentVM = _mapper.Map<DepartmentDetailsDto, DepartmetViewModel>(department);
+
+           /* return View(new DepartmetViewModel()
             {
                 Code = department.Code,
                 Name = department.Name,
                 Description = department.Description,
                 CreationDate = department.CreationDate
 
-            });
+            });*/
+           return View(departmentVM);
 
                                                                    
         }
@@ -97,8 +106,9 @@ namespace Demo.pl.Controllers
             var msg = string.Empty;
             try
             {
-                var department = new UpdateDepartmentDto() { Id = id, Code = departmetEditViewModel.Code, Name = departmetEditViewModel.Name, Description = departmetEditViewModel.Description, CreationDate = departmetEditViewModel.CreationDate };
-
+                var department = _mapper.Map<UpdateDepartmentDto>(departmetEditViewModel);
+                // var department = new UpdateDepartmentDto() { Id = id, Code = departmetEditViewModel.Code, Name = departmetEditViewModel.Name, Description = departmetEditViewModel.Description, CreationDate = departmetEditViewModel.CreationDate };
+                department.Id = id;
                 var x = _services.UpdateDepartment(department);
                 if (x > 0) { return RedirectToAction(nameof(Index)); }
 

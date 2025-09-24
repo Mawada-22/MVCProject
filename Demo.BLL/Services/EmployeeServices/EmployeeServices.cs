@@ -2,6 +2,7 @@
 using Demo.DAL.Entites.Departments;
 using Demo.DAL.Entites.Employees;
 using Demo.DAL.Presistance.Repostries.EmployeeRepos;
+using Demo.DAL.Presistance.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,10 @@ namespace Demo.BLL.Services.EmployeeServices
 {
     public class EmployeeServices : IEmployeeServices
     {
-        private readonly IEmployeeRepostiry _employeeRepostiry;
+        private readonly IUnitOfWork _unitofwork;
 
-        public EmployeeServices(IEmployeeRepostiry employeeRepostiry)
-        {
-            this._employeeRepostiry = employeeRepostiry;
+        public EmployeeServices(IUnitOfWork unitOfWork) { _unitofwork = unitOfWork; 
+        
         }
 
         public int CreateEmployee(CreateEmpDto createEmpDto)
@@ -39,20 +39,23 @@ namespace Demo.BLL.Services.EmployeeServices
                
 
             };
-            return _employeeRepostiry.Add(employee);
+            
+                _unitofwork.employeeRepostiry.Add(employee);
+            return _unitofwork.Compelete();
 
         }
 
         public bool DeltedEmployee(int id)
         {
-            var emp = _employeeRepostiry.Get(id);
-            if (emp != null) { return _employeeRepostiry.Delete(emp) > 0; }
-            else { return false; }
+            var repo = _unitofwork.employeeRepostiry;
+            var emp = repo.Get(id);
+            if (emp != null) repo.Delete(emp);
+            return _unitofwork.Compelete() > 0;
         }
 
         public IEnumerable<EmpDto> GetEmpolyees(string sreach)
         {
-            var Emps = _employeeRepostiry.GetQueryable().Where(E=>!E.IsDeleted && (string.IsNullOrEmpty(sreach) ||E.Name.ToLower().Contains(sreach.ToLower()))).Include(E=>E.department).Select(Emp => new EmpDto
+            var Emps = _unitofwork.employeeRepostiry.GetQueryable().Where(E=>!E.IsDeleted && (string.IsNullOrEmpty(sreach) ||E.Name.ToLower().Contains(sreach.ToLower()))).Include(E=>E.department).Select(Emp => new EmpDto
             {
                 ID = Emp.ID,
                 Name = Emp.Name,
@@ -72,7 +75,7 @@ namespace Demo.BLL.Services.EmployeeServices
 
         public EmpDetailsDto? GetEmployeeById(int id)
         {
-            var Emp = _employeeRepostiry.Get(id);
+            var Emp = _unitofwork.employeeRepostiry.Get(id);
 
             if (Emp is not null)
             {
@@ -101,7 +104,7 @@ namespace Demo.BLL.Services.EmployeeServices
 
         public int UpdateEmployee(UpdateEmpDto updateEmpDto)
         {
-            var emp = _employeeRepostiry.Get(updateEmpDto.Id);
+            var emp = _unitofwork.employeeRepostiry.Get(updateEmpDto.Id);
             if (emp == null) return 0;
 
             // Update only the editable fields
@@ -123,7 +126,9 @@ namespace Demo.BLL.Services.EmployeeServices
             if (!string.IsNullOrWhiteSpace(updateEmpDto.Address))
                 emp.Address = updateEmpDto.Address;
 
-            return _employeeRepostiry.update(emp);
+           
+                _unitofwork.employeeRepostiry.update(emp);
+            return _unitofwork.Compelete();
         }
 
     }

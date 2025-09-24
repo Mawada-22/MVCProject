@@ -1,6 +1,7 @@
 ﻿using Demo.BLL.Dtos;
 using Demo.DAL.Entites.Departments;
 using Demo.DAL.Presistance.Repostries.DepartmentRepos;
+using Demo.DAL.Presistance.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,12 @@ namespace Demo.BLL.Services.DepartmentServicea
     public class DepartmentServisces : IDepartmentServices
     {
 
-        private readonly IDepartmentRepostiry _departmentRepostiry;
+        private readonly IUnitOfWork _unitOfWork;
        
-        public DepartmentServisces(IDepartmentRepostiry departmentRepostiry)
+        public DepartmentServisces(IUnitOfWork unitOfWork)
             
             {
-              _departmentRepostiry = departmentRepostiry;
+            _unitOfWork = unitOfWork;
             }
         public int CreateDepartment(CreateDepartmentDto createDepartmentDto)
         {
@@ -27,13 +28,14 @@ namespace Demo.BLL.Services.DepartmentServicea
                 CreationDate = createDepartmentDto.CreationDate, CreatedBy =1
             };
             
-            return _departmentRepostiry.Add(department);
+             _unitOfWork.departmentRepostiry.Add(department);
+            return _unitOfWork.Compelete();
         }
 
 
         public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
         {
-            var departments = _departmentRepostiry.GetQueryable().Select(department => new DepartmentToReturnDto
+            var departments = _unitOfWork.departmentRepostiry.GetQueryable().Select(department => new DepartmentToReturnDto
             {
                 Id = department.ID,
                 Code = department.Code,
@@ -47,7 +49,7 @@ namespace Demo.BLL.Services.DepartmentServicea
 
         public DepartmentDetailsDto? GetDepartmentById(int id)
         {
-            var department = _departmentRepostiry.Get(id);
+            var department = _unitOfWork.departmentRepostiry.Get(id);
 
             if (department is not  null) {
                 return new DepartmentDetailsDto
@@ -67,12 +69,11 @@ namespace Demo.BLL.Services.DepartmentServicea
 
         public bool DeltedDepartment(int id)
         {
-            var department = _departmentRepostiry.Get(id);
-            if (department is not null)
-            {
-                return _departmentRepostiry.Delete(department)>0;
-            }
-            return false;
+            var repo = _unitOfWork.departmentRepostiry;
+            var department = repo.Get(id);
+            if (department is not null)  repo.Delete(department);
+
+            return _unitOfWork.Compelete() > 0;
         }
 
         public int UpdateDepartment(UpdateDepartmentDto updateDepartmentDto)
@@ -92,7 +93,8 @@ namespace Demo.BLL.Services.DepartmentServicea
             };
 
            
-                return _departmentRepostiry.update(department);
+              _unitOfWork.departmentRepostiry.update(department);
+            return _unitOfWork.Compelete();
            
             
         }

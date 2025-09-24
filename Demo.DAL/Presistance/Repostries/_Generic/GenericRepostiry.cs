@@ -15,16 +15,16 @@ namespace Demo.DAL.Presistance.Repostries._Generic
     {
         private protected readonly APPDBContext _context;
         public GenericRepostiry(APPDBContext context) { _context = context; }
-        public int Add(T t)
+        public void Add(T t)
         {
             _context.Set<T>().Add(t);
-            return _context.SaveChanges();
+           
         }
 
-        public int Delete(T t)
+        public void Delete(T t)
         {
             _context.Set<T>().Remove(t);
-            return _context.SaveChanges();
+           
         }
 
         public T? Get(int id)
@@ -45,10 +45,10 @@ namespace Demo.DAL.Presistance.Repostries._Generic
             return _context.Set<T>().AsQueryable();
         }
 
-        public int update(T t)
+        public void update(T t)
         {
             _context.Set<T>().Update(t);
-            return _context.SaveChanges();
+           
         }
     }
 }
