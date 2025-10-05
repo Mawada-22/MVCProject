@@ -9,8 +9,10 @@ namespace Demo.BLL.Dtos
 {
     public class CreateDepartmentDto
     {
-        
-        public string Name { get; set; } = null!;
+
+        [Required(ErrorMessage = "Name is Reqiured")]
+
+        public string Name { get; set; } 
 
         public string? Description { get; set; }
        [Required(ErrorMessage ="Code is Reqiured")]

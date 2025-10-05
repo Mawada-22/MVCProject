@@ -1,0 +1,41 @@
+﻿@model DepartmetViewModel
+@{
+    ViewData["Title"] = "View";
+}
+
+<form asp-action="@ViewBag.Action" class="col-8">
+    <div class="form-group mb-3">
+        <label class="col-form-label" asp-for="Code"></label>
+        <input asp-for="Code" class="form-control" />
+    </div>
+    <div class="form-group mb-3">
+        <label class="col-form-label" asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label class="col-form-label" asp-for="Description"></label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="form-group mb-3">
+        <label class="col-form-label" asp-for="CreationDate"></label>
+        <input asp-for="CreationDate" class="form-control" type="datetime-local"
+               value="@Model?.CreationDate.ToString("yyyy-MM-ddTHH:mm")" />
+    </div>
+    @if(ViewBag.Action == "Create"){   
+        <div class="mt-4">
+        <input type="submit" class="btn btn-primary" value="Create" />
+        <span>|</span>
+        <a asp-controller="Department" asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+    }else{
+         <div class="mt-4">
+            <input type="submit" class="btn btn-primary" value="Save Changes" />
+            <span>|</span>
+            <a asp-controller="Department" asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    }
+
+
+
+</form>

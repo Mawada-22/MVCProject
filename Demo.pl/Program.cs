@@ -1,7 +1,13 @@
+using Demo.BLL.Common.Sevices;
 using Demo.BLL.Services.DepartmentServicea;
+using Demo.BLL.Services.EmployeeServices;
 using Demo.DAL.Presistance.Data;
 using Demo.DAL.Presistance.Repostries.DepartmentRepos;
+using Demo.DAL.Presistance.Repostries.EmployeeRepos;
+using Demo.DAL.Presistance.UnitOfWork;
+using Demo.pl.Mapping;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Demo.pl
 {
@@ -18,13 +24,22 @@ namespace Demo.pl
             // Add services to the container. //configure sevice
             builder.Services.AddControllersWithViews();
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            //services life time 
+            //addscooped --> per request 
+            //add singlton --> per application 
+            //add tranisint --> per operation 
 
-            builder.Services.AddDbContext<APPDBContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<APPDBContext>((OptionsBuilder) => {
+            OptionsBuilder.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
           
             builder.Services.AddScoped<IDepartmentRepostiry, DepartmentRepostiry>();//allow dependancy injection by clr
-            builder.Services.AddScoped<IDepartmentServices, DepartmentServisces >(); //allow DI by clr in departmentcontlloer
+            builder.Services.AddScoped<IEmployeeRepostiry, EmployeeRepostiry>();//allow dependancy injection by clr
+            builder.Services.AddScoped<IDepartmentServices, DepartmentServisces >();  builder.Services.AddScoped<IDepartmentRepostiry, DepartmentRepostiry>();//allow dependancy injection by clr
+            builder.Services.AddScoped<IEmployeeServices, EmployeeServices>(); //allow DI by clr in departmentcontlloer
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(M=>M.AddProfile(new MappingProfile()));
+            builder.Services.AddTransient<IAtttachmentServices,AttachmentServices>();
             #endregion
 
             var app = builder.Build();

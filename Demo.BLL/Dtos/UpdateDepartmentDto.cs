@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demo.DAL.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,9 @@ namespace Demo.BLL.Dtos
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
         public  DateTime CreationDate { get; set; }
+        public Gender? gender { get; set; }
+
+
 
 
     }

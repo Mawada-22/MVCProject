@@ -1,0 +1,9 @@
+﻿@model Demo.BLL.Dtos.EmpDetailsDto
+@{
+    ViewData["Title"] = "Employee Details";
+    bool isAdmin = User.IsInRole("Admin"); // Assuming roles are used
+}
+<h1>Employee Details</h1>
+<br />
+<br />
+<partial name="EmpPartials\DetailsDeleteEmpPartial"></partial>

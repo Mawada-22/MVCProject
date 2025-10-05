@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Entites.Departments;
+using Demo.DAL.Presistance.Repostries._Generic;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
@@ -8,14 +9,9 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Presistance.Repostries.DepartmentRepos
 { 
-    public interface IDepartmentRepostiry
+    public interface IDepartmentRepostiry :IGenericRepostiry<Department>
     {
-        Department? Get(int id);
-        IEnumerable<Department> GETALL(bool WithAsNoTracking=true);
-        IQueryable<Department> GetQueryable();
-        int Add(Department department);
-        int update(Department department);
-        int Delete(Department department);
+       
 
     }
 }

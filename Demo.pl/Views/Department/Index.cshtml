@@ -1,60 +1,54 @@
-﻿@*first of all chose the model of needed data*@
+﻿@model IEnumerable<DepartmentToReturnDto>
 
-@model IEnumerable<DepartmentToReturnDto>
 @{
-    ViewData["Title"] = "Index";
-   
+    ViewData["Title"] = "Departments";
 }
-@*Master page of all departments*@
-<h1>Departments</h1>
-<br \>
-<br \>
 
-<a asp-controller="Department" asp-action="Create" class="btn btn-primary">Create Dapartment</a>
-<br \ >
- @if (Model.Count()>0){
+<h1 class="mb-4">Departments</h1>
 
-<table calss="mt-4 table table-striped table-hover">
+<a asp-controller="Department" asp-action="Create" class="btn btn-primary mb-3">
+    <i class="bi bi-plus-circle"></i> Create Department
+</a>
 
-    <thead class="text-center">
-     <tr>
-         <th>@Html.DisplayNameFor(D=>D.Code)</th>
-         <th>@Html.DisplayNameFor(D=>D.Name)</th>
-         <th>@Html.DisplayNameFor(D=>D.CreationDate)</th>
-         <th>Detils</th>
-         <th>update</th>
-         <th>Delete</th>
-     </tr> 
-    </thead>
-
-    <tbody class="text-center">
-        @foreach(var dep in Model){
+@if (Model.Any())
+{
+    <table class="table table-striped table-hover text-center">
+        <thead class="table-dark">
             <tr>
-                <td>@dep.Code</td>
-                <td>@dep.Name</td>
-                <td>@dep.CreationDate</td>
-                <td>
-                        <a asp-controller="Department" asp-action="Details" asp-route-id="@dep.Id" class="btn btn-warning"> <i class="fa-solid fa-eye"></i> Details</a>
-                </td>
-                    <td>
-                        <a asp-controller="Department" asp-action="Edit" asp-route-id="@dep.Id" class="btn btn-success"> <i class="fa-solid fa-edit"></i> Update</a>
-                    </td>
-                    <td>
-                        <a asp-controller="Department" asp-action="Delete" asp-route-id="@dep.Id" class="btn btn-danger"> <i class="fa-solid fa-trash"></i> Delete</a>
-                    </td>
+                <th>@Html.DisplayNameFor(d => d.Code)</th>
+                <th>@Html.DisplayNameFor(d => d.Name)</th>
+                <th>@Html.DisplayNameFor(d => d.CreationDate)</th>
+                <th colspan="3">Actions</th>
             </tr>
-     
-        }
-
-    </tbody>
-</table>
-
- }
- else{
-
-     <div class="mt-4 alert alert-info">There is no Department</div>
- }
-
-
-
-
+        </thead>
+        <tbody>
+            @foreach (var dep in Model)
+            {
+                <tr>
+                    <td>@dep.Code</td>
+                    <td>@dep.Name</td>
+                    <td>@dep.CreationDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@dep.Id" class="btn btn-info btn-sm">
+                            <i class="bi bi-eye"></i> Details
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@dep.Id" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@dep.Id" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mt-4">There are no departments.</div>
+}

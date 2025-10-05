@@ -1,0 +1,11 @@
+﻿@model DepartmentDetailsDto
+@{
+    ViewData["Title"] = "Delete";
+     bool isAdmin = User.IsInRole("Admin"); // Assuming roles are used
+    ViewBag.Action = "Delete";
+}
+
+<h1>Are you sure you want to delete this </h1>
+
+@*Delete Modal*@
+<partial name="Partial\DetailsdeletDepartmentPartial"></partial>
