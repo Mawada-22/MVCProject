@@ -27,6 +27,7 @@ namespace Demo.DAL.Entites.Employees
         public int? Departmentid { get; set; }
         //navigational prooertty.
         public virtual Department? department { get; set; }
+        public string? Image {  get; set; }
            
     }
 }

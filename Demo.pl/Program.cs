@@ -1,3 +1,4 @@
+using Demo.BLL.Common.Sevices;
 using Demo.BLL.Services.DepartmentServicea;
 using Demo.BLL.Services.EmployeeServices;
 using Demo.DAL.Presistance.Data;
@@ -38,6 +39,7 @@ namespace Demo.pl
             builder.Services.AddScoped<IEmployeeServices, EmployeeServices>(); //allow DI by clr in departmentcontlloer
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(M=>M.AddProfile(new MappingProfile()));
+            builder.Services.AddTransient<IAtttachmentServices,AttachmentServices>();
             #endregion
 
             var app = builder.Build();

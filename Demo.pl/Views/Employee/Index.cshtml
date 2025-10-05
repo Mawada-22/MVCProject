@@ -42,6 +42,12 @@
             @foreach (var employee in Model)
             {
                 <tr>
+                    <td>
+                        <img src="~/Files/Images/@(employee.Image ?? "Defalut.jpg")"
+                             alt="@employee.Name"
+                             class="rounded-circle shadow-sm"
+                             style="width: 50px; height: 50px; object-fit: cover;" />
+                    </td>
                     <td>@Html.DisplayFor(_ => employee.Name)</td>
                     <td>@Html.DisplayFor(_ => employee.EmpType)</td>
                     <td>@Html.DisplayFor(_ => employee.Email)</td>

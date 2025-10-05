@@ -1,6 +1,8 @@
-﻿using Demo.BLL.Dtos;
+﻿using AutoMapper;
+using Demo.BLL.Dtos;
 using Demo.BLL.Services.DepartmentServicea;
 using Demo.BLL.Services.EmployeeServices;
+using Demo.pl.Models.Departmets;
 using Demo.pl.Models.Employees;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +14,14 @@ namespace Demo.pl.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
         private readonly IDepartmentServices _departmentService;
-        public EmployeeController(IEmployeeServices employeeServices, ILogger<EmployeeController> logger, IWebHostEnvironment environment, IDepartmentServices departmentServices)
+        private readonly IMapper _mapper;
+        public EmployeeController(IEmployeeServices employeeServices, ILogger<EmployeeController> logger, IWebHostEnvironment environment, IDepartmentServices departmentServices, IMapper mapper)
         {
             _services = employeeServices;
             _environment = environment;
             _logger = logger;
             _departmentService = departmentServices;
+            _mapper = mapper;
         }
         [HttpGet] //Get: /Departments?Index
         public IActionResult Index(string search)
@@ -44,8 +48,9 @@ namespace Demo.pl.Controllers
             {
                 return View(employeeModelView);
             }
-
-            var res = _services.CreateEmployee(new CreateEmpDto() {Name=employeeModelView.Name,Email=employeeModelView.Email,Address=employeeModelView.Address,IsActive=employeeModelView.IsActive,EmpType=employeeModelView.EmpType,Age=employeeModelView.Age,Salary=employeeModelView.Salary,PhoneNumber=employeeModelView.phonenumber,gender=employeeModelView.gender, Departmentid=employeeModelView.DepartmentID});
+            var tobecreated = _mapper.Map<EmployeeModelView, CreateEmpDto>(employeeModelView);
+            var res = _services.CreateEmployee(tobecreated);
+           // var res = _services.CreateEmployee(new CreateEmpDto() {Name=employeeModelView.Name,Email=employeeModelView.Email,Address=employeeModelView.Address,IsActive=employeeModelView.IsActive,EmpType=employeeModelView.EmpType,Age=employeeModelView.Age,Salary=employeeModelView.Salary,PhoneNumber=employeeModelView.phonenumber,gender=employeeModelView.gender, Departmentid=employeeModelView.DepartmentID});
 
             if (res > 0) { return RedirectToAction(nameof(Index)); }
             else
@@ -82,9 +87,8 @@ namespace Demo.pl.Controllers
             if (emp == null) { return NotFound(); };
 
             ViewData["Departments"] = _departmentService.GetAllDepartments();
-
-
-            return View(new EmployeeModelView()
+            var EmpVM = _mapper.Map<EmpDetailsDto, EmployeeModelView>(emp);
+           /* return View(new EmployeeModelView()
             {
                 Name = emp.Name,
                 Salary = emp.Salary,
@@ -98,7 +102,9 @@ namespace Demo.pl.Controllers
                 gender = emp.gender,
                 DepartmentID=emp.Departmentid,
                 DepartmentName=emp.DepartmentName
-            });
+            });*/
+
+            return View(EmpVM);
 
 
         }
@@ -114,6 +120,8 @@ namespace Demo.pl.Controllers
                 return View(employeeEditModelView);
             }
 
+
+            /*
             var Emp = new UpdateEmpDto()
             {
                 Id = id,
@@ -130,11 +138,16 @@ namespace Demo.pl.Controllers
                 DepartmentId = employeeEditModelView.DepartmentID.HasValue && employeeEditModelView.DepartmentID > 0
                                 ? employeeEditModelView.DepartmentID
                                 : null
-            };
+            };*/
 
-            var x = _services.UpdateEmployee(Emp);
 
-            if (x > 0)
+            var empDto = _mapper.Map<UpdateEmpDto>(employeeEditModelView);
+            empDto.Id = id; // ensure the correct ID is set
+
+            var result = _services.UpdateEmployee(empDto);
+
+
+            if (result > 0)
                 return RedirectToAction(nameof(Index));
 
             return BadRequest();

@@ -24,6 +24,8 @@ namespace Demo.pl.Models.Employees
         public int? DepartmentID { get; set; }
         public string? DepartmentName { get; set; }
 
+        public IFormFile? Image { get; set; }
+
 
     }
 }

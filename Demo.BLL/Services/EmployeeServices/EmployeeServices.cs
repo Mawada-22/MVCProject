@@ -1,4 +1,5 @@
-﻿using Demo.BLL.Dtos;
+﻿using Demo.BLL.Common.Sevices;
+using Demo.BLL.Dtos;
 using Demo.DAL.Entites.Departments;
 using Demo.DAL.Entites.Employees;
 using Demo.DAL.Presistance.Repostries.EmployeeRepos;
@@ -15,10 +16,11 @@ namespace Demo.BLL.Services.EmployeeServices
     public class EmployeeServices : IEmployeeServices
     {
         private readonly IUnitOfWork _unitofwork;
+        private readonly IAtttachmentServices _atttachmentServices;
 
-        public EmployeeServices(IUnitOfWork unitOfWork) { _unitofwork = unitOfWork; 
-        
-        }
+        public EmployeeServices(IUnitOfWork unitOfWork, IAtttachmentServices atttachmentServices)
+        { _unitofwork = unitOfWork; _atttachmentServices = atttachmentServices; }
+
 
         public int CreateEmployee(CreateEmpDto createEmpDto)
         {
@@ -35,10 +37,16 @@ namespace Demo.BLL.Services.EmployeeServices
                 HiringDate = createEmpDto.HiringDate,
                 IsActive = createEmpDto.IsActive,
                 EmpType = createEmpDto.EmpType,
-                Departmentid = createEmpDto.Departmentid
+                Departmentid = createEmpDto.Departmentid,
+
                
 
             };
+
+            if (createEmpDto.Image is not null)
+            {
+                employee.Image = _atttachmentServices.Upload(createEmpDto.Image, "Images");
+            }
             
                 _unitofwork.employeeRepostiry.Add(employee);
             return _unitofwork.Compelete();
@@ -65,7 +73,8 @@ namespace Demo.BLL.Services.EmployeeServices
                 gender = Emp.gender,
                 EmpType = Emp.EmpType,
                 DepartmentId = Emp.Departmentid,
-                DepartmentName=Emp.department.Name
+                DepartmentName=Emp.department.Name,
+                Image = Emp.Image
                
 
 
@@ -94,7 +103,8 @@ namespace Demo.BLL.Services.EmployeeServices
                     CreatedOn = Emp.CreatedOn,
                     PhoneNumber = Emp.PhoneNumber,
                     Departmentid = Emp.Departmentid,
-                    DepartmentName = Emp.department != null ? Emp.department.Name : "No Department"
+                    DepartmentName = Emp.department != null ? Emp.department.Name : "No Department",
+                    Image = Emp.Image
 
 
                 };
@@ -115,6 +125,7 @@ namespace Demo.BLL.Services.EmployeeServices
             emp.Departmentid = updateEmpDto.DepartmentId;
             emp.gender = updateEmpDto.gender;
             emp.Address = updateEmpDto.Address;
+           
 
             // Keep existing email and phone unless explicitly passed
             if (!string.IsNullOrWhiteSpace(updateEmpDto.Email))
@@ -126,8 +137,13 @@ namespace Demo.BLL.Services.EmployeeServices
             if (!string.IsNullOrWhiteSpace(updateEmpDto.Address))
                 emp.Address = updateEmpDto.Address;
 
-           
-                _unitofwork.employeeRepostiry.update(emp);
+            if (updateEmpDto.Image is not null)
+            {
+                emp.Image = _atttachmentServices.Upload(updateEmpDto.Image, "Images");
+            }
+
+
+            _unitofwork.employeeRepostiry.update(emp);
             return _unitofwork.Compelete();
         }
 

@@ -1,5 +1,6 @@
 ﻿using Demo.DAL.Common;
 using Demo.DAL.Entites.Departments;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +30,7 @@ namespace Demo.BLL.Dtos
         public DateTime HiringDate { get; set; }
         public int? DepartmentId { get; set; }
 
-
+        public IFormFile? Image { get; set; }
 
 
 
