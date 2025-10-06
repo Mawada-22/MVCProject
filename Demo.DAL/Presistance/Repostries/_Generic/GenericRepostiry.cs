@@ -27,17 +27,17 @@ namespace Demo.DAL.Presistance.Repostries._Generic
            
         }
 
-        public T? Get(int id)
+        public async Task<T?> GetAsync(int id)
         {
-            return _context.Set<T>().Find(id);  
+            return await _context.Set<T>().FindAsync(id);  
         }
 
-        public IEnumerable<T> GETALL(bool WithAsNoTracking = true)
+        public async Task<IEnumerable<T>> GETALLAsync(bool WithAsNoTracking = true)
         {
             if(WithAsNoTracking)
-            return _context.Set<T>().AsNoTracking().ToList();
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
 
-            return _context.Set<T>().ToList();
+            return await _context.Set<T>().ToListAsync();
         }
 
         public IQueryable<T> GetQueryable()

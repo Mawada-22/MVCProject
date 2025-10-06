@@ -2,6 +2,7 @@
 using Demo.DAL.Entites.Departments;
 using Demo.DAL.Presistance.Repostries.DepartmentRepos;
 using Demo.DAL.Presistance.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Demo.BLL.Services.DepartmentServicea
             {
             _unitOfWork = unitOfWork;
             }
-        public int CreateDepartment(CreateDepartmentDto createDepartmentDto)
+        public async Task<int> CreateDepartmentAsync(CreateDepartmentDto createDepartmentDto)
         {
             var department = new Department()
             {
@@ -29,27 +30,27 @@ namespace Demo.BLL.Services.DepartmentServicea
             };
             
              _unitOfWork.departmentRepostiry.Add(department);
-            return _unitOfWork.Compelete();
+            return await _unitOfWork.CompeleteAsync();
         }
 
 
-        public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
+        public async Task<IEnumerable<DepartmentToReturnDto>> GetAllDepartmentsAsync()
         {
-            var departments = _unitOfWork.departmentRepostiry.GetQueryable().Select(department => new DepartmentToReturnDto
+            var departments =await _unitOfWork.departmentRepostiry.GetQueryable().Select(department => new DepartmentToReturnDto
             {
                 Id = department.ID,
                 Code = department.Code,
                 Name = department.Name,
                 CreationDate = department.CreationDate,
 
-            });
+            }).AsNoTracking().ToListAsync();
             return departments;
 
         }
 
-        public DepartmentDetailsDto? GetDepartmentById(int id)
+        public async Task<DepartmentDetailsDto?> GetDepartmentByIdAsync(int id)
         {
-            var department = _unitOfWork.departmentRepostiry.Get(id);
+            var department = await _unitOfWork.departmentRepostiry.GetAsync(id);
 
             if (department is not  null) {
                 return new DepartmentDetailsDto
@@ -67,16 +68,16 @@ namespace Demo.BLL.Services.DepartmentServicea
 
         }
 
-        public bool DeltedDepartment(int id)
+        public async Task<bool> DeltedDepartmentAsync(int id)
         {
             var repo = _unitOfWork.departmentRepostiry;
-            var department = repo.Get(id);
+            var department = await  repo.GetAsync(id);
             if (department is not null)  repo.Delete(department);
 
-            return _unitOfWork.Compelete() > 0;
+            return  await _unitOfWork.CompeleteAsync() > 0;
         }
 
-        public int UpdateDepartment(UpdateDepartmentDto updateDepartmentDto)
+        public async Task<int> UpdateDepartmentAsync(UpdateDepartmentDto updateDepartmentDto)
         {
 
             var department = new Department()
@@ -94,7 +95,7 @@ namespace Demo.BLL.Services.DepartmentServicea
 
            
               _unitOfWork.departmentRepostiry.update(department);
-            return _unitOfWork.Compelete();
+            return await _unitOfWork.CompeleteAsync();
            
             
         }

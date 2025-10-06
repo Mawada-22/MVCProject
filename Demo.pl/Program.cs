@@ -1,11 +1,14 @@
 using Demo.BLL.Common.Sevices;
 using Demo.BLL.Services.DepartmentServicea;
 using Demo.BLL.Services.EmployeeServices;
+using Demo.DAL.Entites.Identitiy;
 using Demo.DAL.Presistance.Data;
 using Demo.DAL.Presistance.Repostries.DepartmentRepos;
 using Demo.DAL.Presistance.Repostries.EmployeeRepos;
 using Demo.DAL.Presistance.UnitOfWork;
 using Demo.pl.Mapping;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -40,6 +43,37 @@ namespace Demo.pl
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(M=>M.AddProfile(new MappingProfile()));
             builder.Services.AddTransient<IAtttachmentServices,AttachmentServices>();
+
+            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
+            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+            //builder.Services.AddScoped<RoleManager<IdentityRole>>();
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 5;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredUniqueChars = 1;
+
+                options.User.RequireUniqueEmail = true;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+            })
+.AddEntityFrameworkStores<APPDBContext>()
+.AddDefaultTokenProviders().AddDefaultTokenProviders();
+
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.LoginPath = "/Account/LogIn";
+                options.AccessDeniedPath = "/Home/Error";
+                options.LoginPath = "/Account/LogIn";
+
+            });
+            builder.Services.AddAuthorization();
+            
             #endregion
 
             var app = builder.Build();
@@ -59,11 +93,12 @@ namespace Demo.pl
 
             app.UseRouting();
 
-           // app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
 
             #endregion
 

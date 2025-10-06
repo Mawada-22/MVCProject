@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Presistance.UnitOfWork
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IAsyncDisposable
     {
         public IEmployeeRepostiry employeeRepostiry { get;  }
         public IDepartmentRepostiry departmentRepostiry { get;  }
 
-        int Compelete();
+        Task<int> CompeleteAsync();
     }
 }

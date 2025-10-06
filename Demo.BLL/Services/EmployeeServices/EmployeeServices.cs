@@ -22,7 +22,7 @@ namespace Demo.BLL.Services.EmployeeServices
         { _unitofwork = unitOfWork; _atttachmentServices = atttachmentServices; }
 
 
-        public int CreateEmployee(CreateEmpDto createEmpDto)
+        public async Task<int> CreateEmployeeAsync(CreateEmpDto createEmpDto)
         {
             var employee = new Employee()
             {
@@ -45,25 +45,25 @@ namespace Demo.BLL.Services.EmployeeServices
 
             if (createEmpDto.Image is not null)
             {
-                employee.Image = _atttachmentServices.Upload(createEmpDto.Image, "Images");
+                employee.Image =await  _atttachmentServices.UploadAsync(createEmpDto.Image, "Images");
             }
             
                 _unitofwork.employeeRepostiry.Add(employee);
-            return _unitofwork.Compelete();
+            return await _unitofwork.CompeleteAsync();
 
         }
 
-        public bool DeltedEmployee(int id)
+        public async Task<bool> DeltedEmployeeAsync(int id)
         {
             var repo = _unitofwork.employeeRepostiry;
-            var emp = repo.Get(id);
+            var emp = await repo.GetAsync(id);
             if (emp != null) repo.Delete(emp);
-            return _unitofwork.Compelete() > 0;
+            return await _unitofwork.CompeleteAsync() > 0;
         }
 
-        public IEnumerable<EmpDto> GetEmpolyees(string sreach)
+        public async Task<IEnumerable<EmpDto>> GetEmpolyeesAsync(string sreach)
         {
-            var Emps = _unitofwork.employeeRepostiry.GetQueryable().Where(E=>!E.IsDeleted && (string.IsNullOrEmpty(sreach) ||E.Name.ToLower().Contains(sreach.ToLower()))).Include(E=>E.department).Select(Emp => new EmpDto
+            var Emps = await _unitofwork.employeeRepostiry.GetQueryable().Where(E=>!E.IsDeleted && (string.IsNullOrEmpty(sreach) ||E.Name.ToLower().Contains(sreach.ToLower()))).Include(E=>E.department).Select(Emp => new EmpDto
             {
                 ID = Emp.ID,
                 Name = Emp.Name,
@@ -78,13 +78,13 @@ namespace Demo.BLL.Services.EmployeeServices
                
 
 
-            });
+            }).AsNoTracking().ToListAsync();
             return Emps;
         }
 
-        public EmpDetailsDto? GetEmployeeById(int id)
+        public async Task<EmpDetailsDto?> GetEmployeeByIdAsync(int id)
         {
-            var Emp = _unitofwork.employeeRepostiry.Get(id);
+            var Emp = await _unitofwork.employeeRepostiry.GetAsync(id);
 
             if (Emp is not null)
             {
@@ -112,9 +112,9 @@ namespace Demo.BLL.Services.EmployeeServices
             return null;
         }
 
-        public int UpdateEmployee(UpdateEmpDto updateEmpDto)
+        public async Task<int> UpdateEmployeeAsync(UpdateEmpDto updateEmpDto)
         {
-            var emp = _unitofwork.employeeRepostiry.Get(updateEmpDto.Id);
+            var emp =await _unitofwork.employeeRepostiry.GetAsync(updateEmpDto.Id);
             if (emp == null) return 0;
 
             // Update only the editable fields
@@ -139,12 +139,12 @@ namespace Demo.BLL.Services.EmployeeServices
 
             if (updateEmpDto.Image is not null)
             {
-                emp.Image = _atttachmentServices.Upload(updateEmpDto.Image, "Images");
+                emp.Image = await _atttachmentServices.UploadAsync(updateEmpDto.Image, "Images");
             }
 
 
             _unitofwork.employeeRepostiry.update(emp);
-            return _unitofwork.Compelete();
+            return await _unitofwork.CompeleteAsync();
         }
 
     }

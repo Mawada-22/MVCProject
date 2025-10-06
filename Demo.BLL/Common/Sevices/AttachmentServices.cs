@@ -14,7 +14,7 @@ namespace Demo.BLL.Common.Sevices
         //MAX SIZE => 2MB => 2,097,152 BYTES(2*1024*1024)
 
         public const int _allowedMaxsize = 2_097_152;
-        public string? Upload(IFormFile file, string folderName)
+        public async Task<string?> UploadAsync(IFormFile file, string folderName)
         {
            //validate the file extension 
            var extinsion = Path.GetExtension(file.FileName);
@@ -43,7 +43,7 @@ namespace Demo.BLL.Common.Sevices
 
             //cop efile to file stream 
 
-            file.CopyTo(fileStream);
+            await file.CopyToAsync(fileStream);
             return fileName;
 
 

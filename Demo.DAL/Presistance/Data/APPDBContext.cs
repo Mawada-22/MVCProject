@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Demo.DAL.Entites.Departments;
 using Demo.DAL.Entites.Employees;
+using Demo.DAL.Entites.Identitiy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 
@@ -13,12 +16,13 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace Demo.DAL.Presistance.Data
 {
-    public class APPDBContext : DbContext
+    public class APPDBContext : IdentityDbContext<ApplicationUser>
     {
         public APPDBContext(DbContextOptions<APPDBContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
            
         }

@@ -21,11 +21,11 @@ namespace Demo.pl.Controllers
             _mapper = mapper;
         }
         [HttpGet] //Get: /Departments?Index
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             //returns views with the needed model"all departments"
 
-            var departments = _services.GetAllDepartments();
+            var departments = await _services.GetAllDepartmentsAsync();
             return View(departments);
 
         }
@@ -39,7 +39,7 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(DepartmetViewModel departmetViewModel)
+        public async Task<IActionResult> Create(DepartmetViewModel departmetViewModel)
         {
             if (!ModelState.IsValid) return View(departmetViewModel);
 
@@ -52,7 +52,7 @@ namespace Demo.pl.Controllers
                 Name = departmetViewModel.Name,
                 Description = departmetViewModel.Description
             });*/
-           var res = _services.CreateDepartment(departmentcreated);
+           var res = await _services.CreateDepartmentAsync(departmentcreated);
             if (res > 0) return RedirectToAction(nameof(Index));
 
             ModelState.AddModelError(string.Empty, "Department is not created");
@@ -61,13 +61,13 @@ namespace Demo.pl.Controllers
 
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (!id.HasValue)
             {
                 return BadRequest();
             }
-            var department = _services.GetDepartmentById(id.Value);
+            var department = await _services.GetDepartmentByIdAsync(id.Value);
 
 
             if (department == null) { return NotFound(); };
@@ -75,10 +75,10 @@ namespace Demo.pl.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if(id is null )return BadRequest(); //400
-            var department = _services.GetDepartmentById(id.Value);
+            var department =await _services.GetDepartmentByIdAsync(id.Value);
 
 
             if (department == null) { return NotFound(); };
@@ -100,7 +100,7 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Edit([FromRoute]int id,DepartmetViewModel departmetEditViewModel)
+        public async Task<IActionResult> Edit([FromRoute]int id,DepartmetViewModel departmetEditViewModel)
         {
             if (!ModelState.IsValid) return View(departmetEditViewModel);
             var msg = string.Empty;
@@ -109,7 +109,7 @@ namespace Demo.pl.Controllers
                 var department = _mapper.Map<UpdateDepartmentDto>(departmetEditViewModel);
                 // var department = new UpdateDepartmentDto() { Id = id, Code = departmetEditViewModel.Code, Name = departmetEditViewModel.Name, Description = departmetEditViewModel.Description, CreationDate = departmetEditViewModel.CreationDate };
                 department.Id = id;
-                var x = _services.UpdateDepartment(department);
+                var x = await _services.UpdateDepartmentAsync(department);
                 if (x > 0) { return RedirectToAction(nameof(Index)); }
 
                 msg = "an Error Ocurred while editing department";
@@ -128,11 +128,11 @@ namespace Demo.pl.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async  Task<IActionResult> Delete(int? id)
         {
             if(!id.HasValue) return BadRequest();
 
-            var department = _services.GetDepartmentById(id.Value);
+            var department = await _services.GetDepartmentByIdAsync(id.Value);
 
             if (department == null) { return NotFound(); }
             return View(department);
@@ -140,12 +140,12 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Delete([FromRoute]int id)
+        public async Task<IActionResult>Delete([FromRoute]int id)
         {
             var msg = string.Empty;
             try
             {
-               var deleted = _services.DeltedDepartment(id);
+               var deleted = await _services.DeltedDepartmentAsync(id);
                 if (deleted) return RedirectToAction(nameof(Index));
 
                 msg = "an error Ocurred During deleting the Depaertment:(";

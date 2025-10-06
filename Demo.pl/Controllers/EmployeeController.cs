@@ -24,17 +24,17 @@ namespace Demo.pl.Controllers
             _mapper = mapper;
         }
         [HttpGet] //Get: /Departments?Index
-        public IActionResult Index(string search)
+        public async Task<IActionResult> Index(string search)
         {
 
-            var Emps = _services.GetEmpolyees(search);
+            var Emps =await _services.GetEmpolyeesAsync(search);
             return View(Emps);
 
         }
         [HttpGet] 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["Departments"] = _departmentService.GetAllDepartments();
+            ViewData["Departments"] = await _departmentService.GetAllDepartmentsAsync();
             return View();
 
 
@@ -42,14 +42,14 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Create(EmployeeModelView  employeeModelView)
+        public  async Task<IActionResult> Create(EmployeeModelView  employeeModelView)
         {
             if (!ModelState.IsValid)
             {
                 return View(employeeModelView);
             }
             var tobecreated = _mapper.Map<EmployeeModelView, CreateEmpDto>(employeeModelView);
-            var res = _services.CreateEmployee(tobecreated);
+            var res = await _services.CreateEmployeeAsync(tobecreated);
            // var res = _services.CreateEmployee(new CreateEmpDto() {Name=employeeModelView.Name,Email=employeeModelView.Email,Address=employeeModelView.Address,IsActive=employeeModelView.IsActive,EmpType=employeeModelView.EmpType,Age=employeeModelView.Age,Salary=employeeModelView.Salary,PhoneNumber=employeeModelView.phonenumber,gender=employeeModelView.gender, Departmentid=employeeModelView.DepartmentID});
 
             if (res > 0) { return RedirectToAction(nameof(Index)); }
@@ -61,15 +61,15 @@ namespace Demo.pl.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
-            ViewData["Department"] = _departmentService.GetAllDepartments();
+            ViewData["Department"] = await _departmentService.GetAllDepartmentsAsync();
 
             if (!id.HasValue)
             {
                 return BadRequest();
             }
-            var Emp = _services.GetEmployeeById(id.Value);
+            var Emp = await _services.GetEmployeeByIdAsync(id.Value);
 
 
             if (Emp == null) { return NotFound(); };
@@ -77,16 +77,16 @@ namespace Demo.pl.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
            
             if (!id.HasValue) return BadRequest();
-            var emp = _services.GetEmployeeById(id.Value);
+            var emp =await _services.GetEmployeeByIdAsync(id.Value);
 
 
             if (emp == null) { return NotFound(); };
 
-            ViewData["Departments"] = _departmentService.GetAllDepartments();
+            ViewData["Departments"] = await _departmentService.GetAllDepartmentsAsync();
             var EmpVM = _mapper.Map<EmpDetailsDto, EmployeeModelView>(emp);
            /* return View(new EmployeeModelView()
             {
@@ -112,11 +112,11 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Edit([FromRoute] int id, EmployeeModelView employeeEditModelView)
+        public async Task<IActionResult> Edit([FromRoute] int id, EmployeeModelView employeeEditModelView)
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Departments"] = _departmentService.GetAllDepartments();
+                ViewData["Departments"] =await _departmentService.GetAllDepartmentsAsync();
                 return View(employeeEditModelView);
             }
 
@@ -144,7 +144,7 @@ namespace Demo.pl.Controllers
             var empDto = _mapper.Map<UpdateEmpDto>(employeeEditModelView);
             empDto.Id = id; // ensure the correct ID is set
 
-            var result = _services.UpdateEmployee(empDto);
+            var result =await _services.UpdateEmployeeAsync(empDto);
 
 
             if (result > 0)
@@ -155,11 +155,11 @@ namespace Demo.pl.Controllers
 
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (!id.HasValue) return BadRequest();
 
-            var emp = _services.GetEmployeeById(id.Value);
+            var emp = await _services.GetEmployeeByIdAsync(id.Value);
 
             if (emp == null) { return NotFound(); }
             return View(emp);
@@ -167,13 +167,13 @@ namespace Demo.pl.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
 
             var msg = string.Empty;
             try
             {
-                var deleted = _services.DeltedEmployee(id);
+                var deleted = await _services.DeltedEmployeeAsync(id);
                 if (deleted) return RedirectToAction(nameof(Index));
 
                 msg = "an error Ocurred During deleting the Depaertment:(";

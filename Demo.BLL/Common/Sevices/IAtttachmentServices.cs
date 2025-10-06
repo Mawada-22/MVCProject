@@ -11,7 +11,7 @@ namespace Demo.BLL.Common.Sevices
     {
         //upload , delete 
 
-        string? Upload(IFormFile file, string folderName);
+        Task<string?> UploadAsync(IFormFile file, string folderName);
         bool Delete (string filePath);
     }
 }

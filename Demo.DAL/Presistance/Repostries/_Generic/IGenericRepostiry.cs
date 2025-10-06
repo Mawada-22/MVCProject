@@ -10,8 +10,8 @@ namespace Demo.DAL.Presistance.Repostries._Generic
 {
     public interface IGenericRepostiry<T> where T : ModelBase
     {
-        T? Get(int id);
-        IEnumerable<T> GETALL(bool WithAsNoTracking = true);
+        Task<T?> GetAsync(int id);
+        Task<IEnumerable<T>> GETALLAsync(bool WithAsNoTracking = true);
         IQueryable<T> GetQueryable();
         void Add(T t);
         void update(T t);

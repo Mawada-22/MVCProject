@@ -16,17 +16,18 @@ namespace Demo.DAL.Presistance.UnitOfWork
         public IDepartmentRepostiry departmentRepostiry => new DepartmentRepostiry(_context);
         public UnitOfWork(APPDBContext Context) { _context = Context;} 
         
-
-        public int Compelete()
+        public  async Task<int> CompeleteAsync()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
-
         public void Dispose()
         {
            _context.Dispose();
         }
 
-
+        public async ValueTask DisposeAsync()
+        {
+            await _context.DisposeAsync();
+        }
     }
 }
