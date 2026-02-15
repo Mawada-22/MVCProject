@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +11,12 @@ namespace Demo.BLL.Dtos
     {
        public int Id { get; set; }
         public string? Name { get; set; } = null!;
+        [Required(ErrorMessage = "Code is Reqiured")]
         public string? Code { get; set; } = null!;
         public int CreatedBy { get; set; }
 
         public DateTime CreatedOn { get; set; }
+        public DateTime CreationDate { get; set; }
         public int LastUpdatedBy { get; set; }
 
         public DateTime LastUpdatedOn { get; set; }

@@ -1,6 +1,8 @@
 ﻿using Demo.BLL.Dtos;
 using Demo.BLL.Services.DepartmentServicea;
+using Demo.pl.Models.Departmets;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace Demo.pl.Controllers
 {
@@ -29,6 +31,7 @@ namespace Demo.pl.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public IActionResult Create(CreateDepartmentDto departmentDto)
         {
             if (!ModelState.IsValid)
@@ -58,6 +61,68 @@ namespace Demo.pl.Controllers
 
             if (department == null) { return NotFound(); };
             return View(department);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if(!id.HasValue)return BadRequest();
+            var department = _services.GetDepartmentById(id.Value);
+
+
+            if (department == null) { return NotFound(); };
+
+            return View(new CreateDepartmentDto() {Code= department.Code,Name=department.Name,Description=department.Description,CreationDate=department.CreationDate });
+
+                                                                   
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public IActionResult Edit([FromRoute]int id,DepartmetEditViewModel departmetEditViewModel)
+        {
+            if (!ModelState.IsValid) return View(departmetEditViewModel);
+
+            var department = new UpdateDepartmentDto() { Id=id,Code = departmetEditViewModel.Code, Name = departmetEditViewModel.Name, Description = departmetEditViewModel.Description, CreationDate = departmetEditViewModel.CreationDate };
+           
+            var x =_services.UpdateDepartment(department);
+            if (x > 0) { return RedirectToAction(nameof(Index)); }
+            else { return BadRequest(); }
+
+
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if(!id.HasValue) return BadRequest();
+
+            var department = _services.GetDepartmentById(id.Value);
+
+            if (department == null) { return NotFound(); }
+            return View(department);
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public IActionResult Delete([FromRoute]int id)
+        {
+            var msg = string.Empty;
+            try
+            {
+               var deleted = _services.DeltedDepartment(id);
+                if (deleted) return RedirectToAction(nameof(Index));
+
+                msg = "an error Ocurred During deleting the Depaertment:(";
+
+            }
+            catch (Exception ex)
+            {
+
+               
+            }
+
+           return RedirectToAction(nameof(Index));
         }
     }
 }
